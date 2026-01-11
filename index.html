@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Game App</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Poppins",sans-serif;
+}
+
+body{
+  min-height:120vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:radial-gradient(circle at top,#19d3e8,#9533e5);
+  color:#fff;
+}
+
+body::before, body::after{
+  content:"";
+  position:absolute;
+  width:280px;
+  height:280px;
+  border-radius:50%;
+  filter:blur(120px);
+  opacity:0.1;
+}
+
+body::before{
+  background:linear-gradient(45deg,#325ae0,#1d84df);
+  top:-80px;
+  left:-80px;
+}
+
+body::after{
+  background:linear-gradient(45deg,#fa709a,#fee140);
+  bottom:-80px;
+  right:-80px;
+}
+
+.container{
+  width:380px;
+  padding:25px;
+  border-radius:20px;
+  background:rgba(255,255,255,0.12);
+  backdrop-filter:blur(18px);
+  box-shadow:0 25px 50px rgba(29, 1, 38, 0.607);
+  text-align:center;
+  z-index:1;
+}
+
+h1{
+  font-size:22px;
+  letter-spacing:2px;
+  margin-bottom:15px;
+}
+
+.progress{
+  font-size:14px;
+  opacity:.9;
+  margin-bottom:10px;
+}
+
+.question{
+  font-size:18px;
+  margin:15px 0;
+}
+
+.options{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.option{
+  padding:12px;
+  border-radius:12px;
+  background:rgba(255,255,255,0.15);
+  cursor:pointer;
+  transition:.3s;
+}
+
+.option:hover{
+  background:rgba(255,255,255,0.25);
+  transform:translateY(-2px);
+}
+
+.option.correct{
+  background:linear-gradient(135deg,#38ef7d,#11998e);
+}
+
+.option.wrong{
+  background:linear-gradient(135deg,#ff416c,#ff4b2b);
+}
+
+button{
+  margin-top:20px;
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  font-weight:600;
+  cursor:pointer;
+  background:linear-gradient(135deg,#5c18ef,#2074da);
+  color:#fff;
+  transition:.3s;
+}
+
+button:hover{
+  transform:translateY(-2px);
+  opacity:.9;
+}
+
+.result{
+  font-size:20px;
+  margin:20px 0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>Quiz Game</h1>
+  <div class="progress" id="progress"></div>
+  <div class="question" id="question"></div>
+  <div class="options" id="options"></div>
+  <button id="nextBtn" onclick="nextQuestion()">Next</button>
+</div>
+
+<script>
+const quizData = [
+  {
+    question: "Which language is used to style web pages?",
+    options: ["HTML", "CSS", "JavaScript", "Python"],
+    answer: 1
+  },
+  {
+    question: "Which keyword declares a constant in JavaScript?",
+    options: ["var", "let", "const", "static"],
+    answer: 2
+  },
+  {
+    question: "Which HTML tag is used for JavaScript?",
+    options: ["<js>", "<script>", "<javascript>", "<code>"],
+    answer: 1
+  },
+  {
+    question: "Which symbol is used for comments in JavaScript?",
+    options: ["//", "<!-- -->", "#", "**"],
+    answer: 0
+  }
+];
+
+let currentQuestion = 0;
+let score = 0;
+let answered = false;
+
+const questionEl = document.getElementById("question");
+const optionsEl = document.getElementById("options");
+const progressEl = document.getElementById("progress");
+const nextBtn = document.getElementById("nextBtn");
+
+function loadQuestion(){
+  answered = false;
+  const q = quizData[currentQuestion];
+  questionEl.textContent = q.question;
+  progressEl.textContent = `Question ${currentQuestion + 1} of ${quizData.length}`;
+  optionsEl.innerHTML = "";
+
+  q.options.forEach((option, index) => {
+    const div = document.createElement("div");
+    div.classList.add("option");
+    div.textContent = option;
+    div.onclick = () => selectOption(div, index);
+    optionsEl.appendChild(div);
+  });
+
+  nextBtn.textContent = currentQuestion === quizData.length - 1 ? "Finish" : "Next";
+}
+
+function selectOption(element, index){
+  if(answered) return;
+  answered = true;
+
+  const correctIndex = quizData[currentQuestion].answer;
+  const options = document.querySelectorAll(".option");
+
+  options.forEach((opt, i) => {
+    if(i === correctIndex) opt.classList.add("correct");
+    if(i === index && i !== correctIndex) opt.classList.add("wrong");
+  });
+
+  if(index === correctIndex) score++;
+}
+
+function nextQuestion(){
+  if(!answered && currentQuestion < quizData.length) return;
+
+  currentQuestion++;
+  if(currentQuestion < quizData.length){
+    loadQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult(){
+  document.querySelector(".container").innerHTML = `
+    <h1>Quiz Completed 🎉</h1>
+    <div class="result">Your Score: ${score} / ${quizData.length}</div>
+    <button onclick="restartQuiz()">Restart Quiz</button>
+  `;
+}
+
+function restartQuiz(){
+  currentQuestion = 0;
+  score = 0;
+  location.reload();
+}
+
+loadQuestion();
+</script>
+
+</body>
+</html>
