@@ -1,4 +1,4 @@
-#Task Overview
+# Task Overview
 
 The objective of this task is to develop an interactive quiz game web application using HTML, CSS, and JavaScript. The application displays multiple-choice questions, collects user responses, evaluates answers, and shows the final score. A modern and engaging UI/UX design is implemented to enhance user interaction and usability.
 
@@ -49,11 +49,6 @@ quiz-game-app/
 ---
 
 ## How to Run the Project
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/quiz-game-app.git
-
 
 Navigate to the project folder.
 
